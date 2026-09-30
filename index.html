@@ -1,0 +1,926 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TravelBus - Travelling Community</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            🚌 TravelBus
+        </div>
+
+        <nav>
+            <a href="#" onclick="showHome()">Home</a>
+            <a href="#" onclick="showExplore()">Explore</a>
+            <a href="#" onclick="showForums()">Forums</a>
+            <a href="#" onclick="showProfile()">Profile</a>
+        </nav>
+
+        <button class="login-btn" onclick="openLogin()">
+            Login
+        </button>
+
+    </header>
+
+
+    <!-- ================= MAIN CONTAINER ================= -->
+
+    <main class="container" id="mainContainer">
+
+        <!-- ================= LEFT SIDEBAR ================= -->
+
+        <aside class="sidebar">
+
+            <a href="#" onclick="showHome()">🏠 Home</a>
+
+            <a href="#" onclick="showExplore()">🔍 Explore</a>
+
+            <a href="#" onclick="showRoutes()">🚌 Bus Routes</a>
+
+            <a href="#" onclick="showForums()">💬 Forums</a>
+
+            <a href="#" onclick="showProfile()">👤 Profile</a>
+
+            <button class="create-btn" onclick="openCreatePost()">
+                + Create Post
+            </button>
+
+        </aside>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <section class="feed" id="mainContent">
+
+            <h2 id="pageTitle">
+                Travel Community
+            </h2>
+
+
+            <!-- ================= HOME POSTS ================= -->
+
+            <div id="postsContainer">
+
+
+                <!-- POST 1 -->
+
+                <div class="post" data-category="route destination">
+
+                    <div class="post-header">
+
+                        <div class="user-avatar">
+                            K
+                        </div>
+
+                        <div>
+                            <h3>
+                                Khushboo
+                                <span class="verified">✓ Verified</span>
+                            </h3>
+
+                            <p>
+                                Jabalpur → Bhopal
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="post-image">
+                        🚌
+                        <span>
+                            Bus Journey
+                        </span>
+                    </div>
+
+
+                    <div class="post-actions">
+
+                        <button onclick="likePost(this)">
+                            ❤️ Like
+                        </button>
+
+                        <button onclick="toggleComments(this)">
+                            💬 Comment
+                        </button>
+
+                        <button onclick="sharePost(this)">
+                            📤 Share
+                        </button>
+
+                        <button onclick="reportPost(this)">
+                            🚨 Report
+                        </button>
+
+                    </div>
+
+
+                    <p class="likes">
+                        500 likes
+                    </p>
+
+
+                    <p class="caption">
+                        The bus journey was very nice.
+                        The route was beautiful and the journey was very comfortable.
+                    </p>
+
+
+                    <div class="comments-section">
+
+                        <input
+                            type="text"
+                            class="comment-input"
+                            placeholder="Write a comment..."
+                        >
+
+                        <button onclick="addComment(this)">
+                            Post
+                        </button>
+
+                        <div class="comments-list"></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- POST 2 -->
+
+                <div class="post" data-category="destination">
+
+                    <div class="post-header">
+
+                        <div class="user-avatar">
+                            A
+                        </div>
+
+                        <div>
+                            <h3>
+                                Amrita
+                                <span class="verified">✓ Verified</span>
+                            </h3>
+
+                            <p>
+                                Delhi → Jabalpur
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="post-image">
+                        🌄
+                        <span>
+                            Travel Experience
+                        </span>
+                    </div>
+
+
+                    <div class="post-actions">
+
+                        <button onclick="likePost(this)">
+                            ❤️ Like
+                        </button>
+
+                        <button onclick="toggleComments(this)">
+                            💬 Comment
+                        </button>
+
+                        <button onclick="sharePost(this)">
+                            📤 Share
+                        </button>
+
+                        <button onclick="reportPost(this)">
+                            🚨 Report
+                        </button>
+
+                    </div>
+
+
+                    <p class="likes">
+                        90 likes
+                    </p>
+
+
+                    <p class="caption">
+                        Delhi trip was very nice.
+                        Sharing my journey and travel tips with everyone.
+                    </p>
+
+
+                    <div class="comments-section">
+
+                        <input
+                            type="text"
+                            class="comment-input"
+                            placeholder="Write a comment..."
+                        >
+
+                        <button onclick="addComment(this)">
+                            Post
+                        </button>
+
+                        <div class="comments-list"></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- POST 3 -->
+
+                <div class="post" data-category="destination">
+
+                    <div class="post-header">
+
+                        <div class="user-avatar">
+                            A
+                        </div>
+
+                        <div>
+                            <h3>
+                                Anaya
+                                <span class="verified">✓ Verified</span>
+                            </h3>
+
+                            <p>
+                                Amritsar → Punjab
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="post-image">
+                        🌄
+                        <span>
+                            Travel Journey
+                        </span>
+                    </div>
+
+
+                    <div class="post-actions">
+
+                        <button onclick="likePost(this)">
+                            ❤️ Like
+                        </button>
+
+                        <button onclick="toggleComments(this)">
+                            💬 Comment
+                        </button>
+
+                        <button onclick="sharePost(this)">
+                            📤 Share
+                        </button>
+
+                        <button onclick="reportPost(this)">
+                            🚨 Report
+                        </button>
+
+                    </div>
+
+
+                    <p class="likes">
+                        1000 likes
+                    </p>
+
+
+                    <p class="caption">
+                        My Amritsar journey was very adventurous.
+                        I really enjoyed the journey.
+                    </p>
+
+
+                    <div class="comments-section">
+
+                        <input
+                            type="text"
+                            class="comment-input"
+                            placeholder="Write a comment..."
+                        >
+
+                        <button onclick="addComment(this)">
+                            Post
+                        </button>
+
+                        <div class="comments-list"></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- POST 4 -->
+
+                <div class="post" data-category="route destination">
+
+                    <div class="post-header">
+
+                        <div class="user-avatar">
+                            M
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Miska
+                                <span class="verified">✓ Verified</span>
+                            </h3>
+
+                            <p>
+                                Goa → Sri Lanka
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="post-image">
+
+                        🚌
+
+                        <span>
+                            My Travelling Journey
+                        </span>
+
+                    </div>
+
+
+                    <div class="post-actions">
+
+                        <button onclick="likePost(this)">
+                            ❤️ Like
+                        </button>
+
+                        <button onclick="toggleComments(this)">
+                            💬 Comment
+                        </button>
+
+                        <button onclick="sharePost(this)">
+                            📤 Share
+                        </button>
+
+                        <button onclick="reportPost(this)">
+                            🚨 Report
+                        </button>
+
+                    </div>
+
+
+                    <p class="likes">
+                        143 likes
+                    </p>
+
+
+                    <p class="caption">
+                        My Goa to Sri Lanka journey was too good.
+                    </p>
+
+
+                    <div class="comments-section">
+
+                        <input
+                            type="text"
+                            class="comment-input"
+                            placeholder="Write a comment..."
+                        >
+
+                        <button onclick="addComment(this)">
+                            Post
+                        </button>
+
+                        <div class="comments-list"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= RIGHT SIDEBAR ================= -->
+
+        <aside class="right-sidebar">
+
+            <h3>
+                🔥 Trending Routes
+            </h3>
+
+            <div class="route">
+                🚌 Jabalpur → Bhopal
+            </div>
+
+            <div class="route">
+                🚌 Goa → Sri Lanka
+            </div>
+
+            <div class="route">
+                🚌 Pune → Mumbai
+            </div>
+
+            <div class="route">
+                🚌 Delhi → Noida
+            </div>
+
+            <h3 class="popular-title">
+                ⭐ Popular
+            </h3>
+
+            <div class="route">
+                ❤️ Amritsar Journey
+            </div>
+
+            <div class="route">
+                ❤️ Delhi Travel Tips
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <!-- ================= PROFILE ================= -->
+
+    <section class="page-section" id="profileSection">
+
+        <div class="profile-card">
+
+            <div class="profile-avatar">
+                K
+            </div>
+
+            <h2>
+                Khushboo
+                <span class="verified">✓ Verified</span>
+            </h2>
+
+            <p class="profile-bio">
+                Travel lover 🚌 | Exploring new routes and sharing travel experiences.
+            </p>
+
+
+            <div class="profile-stats">
+
+                <div>
+                    <strong id="profilePosts">
+                        4
+                    </strong>
+
+                    <span>
+                        Posts
+                    </span>
+                </div>
+
+
+                <div>
+                    <strong id="profileLikes">
+                        0
+                    </strong>
+
+                    <span>
+                        Likes
+                    </span>
+                </div>
+
+
+                <div>
+                    <strong id="profileComments">
+                        0
+                    </strong>
+
+                    <span>
+                        Comments
+                    </span>
+                </div>
+
+            </div>
+
+
+            <button onclick="editProfile()">
+                Edit Profile
+            </button>
+
+        </div>
+
+
+        <div class="activity-box">
+
+            <h3>
+                📊 My Activity
+            </h3>
+
+            <p>
+                📝 Travel posts shared:
+                <strong id="activityPosts">4</strong>
+            </p>
+
+            <p>
+                ❤️ Likes received:
+                <strong id="activityLikes">0</strong>
+            </p>
+
+            <p>
+                💬 Comments made:
+                <strong id="activityComments">0</strong>
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= EXPLORE ================= -->
+
+    <section class="page-section" id="exploreSection">
+
+        <div class="section-card">
+
+            <h2>
+                🔍 Explore Travel Community
+            </h2>
+
+            <p>
+                Discover popular travel stories, routes and destinations.
+            </p>
+
+            <div class="explore-grid">
+
+                <button onclick="filterPosts('route')">
+                    🚌 Popular Routes
+                </button>
+
+                <button onclick="filterPosts('destination')">
+                    📍 Destinations
+                </button>
+
+                <button onclick="showPopularPosts()">
+                    🔥 Popular Posts
+                </button>
+
+                <button onclick="showAllPosts()">
+                    🌎 All Posts
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ROUTES ================= -->
+
+    <section class="page-section" id="routesSection">
+
+        <div class="section-card">
+
+            <h2>
+                🚌 Bus Routes
+            </h2>
+
+            <p>
+                Explore discussions and travel experiences by route.
+            </p>
+
+
+            <div class="route-card">
+
+                <h3>
+                    Jabalpur → Bhopal
+                </h3>
+
+                <p>
+                    Travel stories • Tips • Discussions
+                </p>
+
+                <button onclick="filterPosts('route')">
+                    View Posts
+                </button>
+
+            </div>
+
+
+            <div class="route-card">
+
+                <h3>
+                    Delhi → Jabalpur
+                </h3>
+
+                <p>
+                    Travel stories • Tips • Discussions
+                </p>
+
+                <button onclick="filterPosts('destination')">
+                    View Posts
+                </button>
+
+            </div>
+
+
+            <div class="route-card">
+
+                <h3>
+                    Pune → Mumbai
+                </h3>
+
+                <p>
+                    Travel stories • Tips • Discussions
+                </p>
+
+                <button onclick="filterPosts('route')">
+                    View Posts
+                </button>
+
+            </div>
+
+
+            <div class="route-card">
+
+                <h3>
+                    Goa → Sri Lanka
+                </h3>
+
+                <p>
+                    Travel stories • Tips • Discussions
+                </p>
+
+                <button onclick="filterPosts('destination')">
+                    View Posts
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FORUMS ================= -->
+
+    <section class="page-section" id="forumsSection">
+
+        <div class="section-card">
+
+            <h2>
+                💬 Forums & Discussion Boards
+            </h2>
+
+            <p>
+                Discuss routes, destinations and travel advice with other travelers.
+            </p>
+
+
+            <div class="forum-card">
+
+                <h3>
+                    🚌 Route Discussions
+                </h3>
+
+                <p>
+                    Ask questions and share information about bus routes.
+                </p>
+
+                <button onclick="openForum('Route Discussions')">
+                    Join Discussion
+                </button>
+
+            </div>
+
+
+            <div class="forum-card">
+
+                <h3>
+                    📍 Destination Discussions
+                </h3>
+
+                <p>
+                    Share travel experiences and destination advice.
+                </p>
+
+                <button onclick="openForum('Destination Discussions')">
+                    Join Discussion
+                </button>
+
+            </div>
+
+
+            <div class="forum-card">
+
+                <h3>
+                    💡 Travel Advice
+                </h3>
+
+                <p>
+                    Ask other travelers for useful travel tips.
+                </p>
+
+                <button onclick="openForum('Travel Advice')">
+                    Join Discussion
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ADMIN MODERATION ================= -->
+
+    <section class="page-section" id="adminSection">
+
+        <div class="section-card">
+
+            <h2>
+                🛡️ Admin Moderation
+            </h2>
+
+            <p>
+                Review reported posts and remove inappropriate content.
+            </p>
+
+
+            <div id="reportedPosts">
+
+                <p class="no-reports">
+                    No reported posts.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CREATE POST POPUP ================= -->
+
+    <div class="popup-overlay" id="createPostPopup">
+
+        <div class="popup-box">
+
+            <h2>
+                Create Travel Post
+            </h2>
+
+
+            <input
+                type="text"
+                id="postRoute"
+                placeholder="Enter your route"
+            >
+
+
+            <textarea
+                id="postCaption"
+                placeholder="Share your travel story or travel tips..."
+            ></textarea>
+
+
+            <label class="upload-label">
+                📸 Choose Travel Photo
+
+                <input
+                    type="file"
+                    id="postPhoto"
+                    accept="image/*"
+                    onchange="previewPhoto(event)"
+                >
+
+            </label>
+
+
+            <div id="photoPreview"></div>
+
+
+            <button onclick="publishPost()">
+                Publish
+            </button>
+
+
+            <button onclick="closeCreatePost()">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= LOGIN POPUP ================= -->
+
+    <div class="popup-overlay" id="loginPopup">
+
+        <div class="popup-box">
+
+            <h2>
+                Login to TravelBus
+            </h2>
+
+
+            <input
+                type="text"
+                id="loginName"
+                placeholder="Enter your name"
+            >
+
+
+            <input
+                type="email"
+                id="loginEmail"
+                placeholder="Enter your email"
+            >
+
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Enter your password"
+            >
+
+
+            <button onclick="loginUser()">
+                Login
+            </button>
+
+
+            <button onclick="closeLogin()">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FORUM POPUP ================= -->
+
+    <div class="popup-overlay" id="forumPopup">
+
+        <div class="popup-box">
+
+            <h2 id="forumTitle">
+                Discussion
+            </h2>
+
+
+            <textarea
+                id="forumMessage"
+                placeholder="Write your discussion..."
+            ></textarea>
+
+
+            <button onclick="postForumMessage()">
+                Post Discussion
+            </button>
+
+
+            <button onclick="closeForum()">
+                Cancel
+            </button>
+
+
+            <div id="forumMessages"></div>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
