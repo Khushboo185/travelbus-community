@@ -1,1804 +1,744 @@
-// ================= GLOBAL VARIABLES =================
+const createPostBtn = document.getElementById("createPostBtn");
+const postModal = document.getElementById("postModal");
+const closeModal = document.getElementById("closeModal");
+const cancelPost = document.getElementById("cancelPost");
 
-let currentUser = "Khushboo";
+createPostBtn.addEventListener("click", function () {
+    postModal.classList.add("show");
+});
 
-let currentForum = "";
+closeModal.addEventListener("click", function () {
+    postModal.classList.remove("show");
+});
 
-let totalComments = 0;
-
-let totalLikes = 0;
-
-
-// ================= GET ELEMENTS =================
-
-const mainContainer = document.getElementById("mainContainer");
-
-const mainContent = document.getElementById("mainContent");
-
-const profileSection = document.getElementById("profileSection");
-
-const exploreSection = document.getElementById("exploreSection");
-
-const routesSection = document.getElementById("routesSection");
-
-const forumsSection = document.getElementById("forumsSection");
-
-const createPostPopup = document.getElementById("createPostPopup");
-
-const loginPopup = document.getElementById("loginPopup");
-
-const forumPopup = document.getElementById("forumPopup");
+cancelPost.addEventListener("click", function () {
+    postModal.classList.remove("show");
+});
 
 
-// ================= STORAGE =================
+/* ---------------- DARK MODE ---------------- */
 
-let savedPosts = JSON.parse(localStorage.getItem("travelBusPosts")) || [];
+const darkModeBtn = document.getElementById("darkModeBtn");
 
-let savedComments =
-    JSON.parse(localStorage.getItem("travelBusComments")) || {};
+function loadTheme() {
 
-let savedLikes =
-    JSON.parse(localStorage.getItem("travelBusLikes")) || {};
+    const savedTheme = localStorage.getItem("travelbus-theme");
 
-let savedForums =
-    JSON.parse(localStorage.getItem("travelBusForums")) || {};
-
-
-// ================= SAVE DATA =================
-
-function savePosts() {
-
-    localStorage.setItem(
-        "travelBusPosts",
-        JSON.stringify(savedPosts)
-    );
-
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+        darkModeBtn.textContent = "☀️";
+    } else {
+        document.body.classList.remove("dark");
+        darkModeBtn.textContent = "🌙";
+    }
 }
 
+darkModeBtn.addEventListener("click", function () {
 
-function saveComments() {
+    document.body.classList.toggle("dark");
 
-    localStorage.setItem(
-        "travelBusComments",
-        JSON.stringify(savedComments)
-    );
+    if (document.body.classList.contains("dark")) {
 
-}
+        localStorage.setItem("travelbus-theme", "dark");
+        darkModeBtn.textContent = "☀️";
 
+    } else {
 
-function saveLikes() {
+        localStorage.setItem("travelbus-theme", "light");
+        darkModeBtn.textContent = "🌙";
+    }
+});
 
-    localStorage.setItem(
-        "travelBusLikes",
-        JSON.stringify(savedLikes)
-    );
+loadTheme();
 
-}
 
+/* ---------------- CREATE POST ---------------- */
 
-function saveForums() {
+function publishPost() {
 
-    localStorage.setItem(
-        "travelBusForums",
-        JSON.stringify(savedForums)
-    );
+    const title = document.getElementById("postTitle").value.trim();
+    const category = document.getElementById("postCategory").value;
+    const content = document.getElementById("postContent").value.trim();
 
-}
-
-
-// ================= HIDE ALL PAGES =================
-
-function hideAllPages() {
-
-    mainContainer.style.display = "none";
-
-    profileSection.style.display = "none";
-
-    exploreSection.style.display = "none";
-
-    routesSection.style.display = "none";
-
-    forumsSection.style.display = "none";
-
-}
-
-
-// ================= HOME =================
-
-function showHome() {
-
-    hideAllPages();
-
-    mainContainer.style.display = "grid";
-
-    mainContent.style.display = "block";
-
-    document.getElementById("pageTitle").textContent =
-        "Travel Community";
-
-    showAllPosts();
-
-}
-
-
-// ================= PROFILE =================
-
-function showProfile() {
-
-    hideAllPages();
-
-    profileSection.style.display = "block";
-
-    updateProfileStats();
-
-}
-
-
-// ================= EXPLORE =================
-
-function showExplore() {
-
-    hideAllPages();
-
-    exploreSection.style.display = "block";
-
-}
-
-
-// ================= BUS ROUTES =================
-
-function showRoutes() {
-
-    hideAllPages();
-
-    routesSection.style.display = "block";
-
-}
-
-
-// ================= FORUMS =================
-
-function showForums() {
-
-    hideAllPages();
-
-    forumsSection.style.display = "block";
-
-}
-
-
-// ================= CREATE POST =================
-
-function openCreatePost() {
-
-    createPostPopup.style.display = "flex";
-
-}
-
-
-function closeCreatePost() {
-
-    createPostPopup.style.display = "none";
-
-    document.getElementById("postRoute").value = "";
-
-    document.getElementById("postCaption").value = "";
-
-    document.getElementById("postPhoto").value = "";
-
-    document.getElementById("photoPreview").innerHTML = "";
-
-}
-
-
-// ================= PHOTO PREVIEW =================
-
-function previewPhoto(event) {
-
-    const file = event.target.files[0];
-
-    const preview =
-        document.getElementById("photoPreview");
-
-    preview.innerHTML = "";
-
-    if (!file) {
-
+    if (title === "" || content === "") {
+        showToast("Please enter post title and content.");
         return;
-
     }
 
-    const image =
-        document.createElement("img");
+    if (content.length < 20) {
+        showToast("Post should contain at least 20 characters.");
+        return;
+    }
 
-    image.src =
-        URL.createObjectURL(file);
+    const postContainer = document.getElementById("postContainer");
 
-    preview.appendChild(image);
+    const newPost = document.createElement("article");
 
+    newPost.className = "post-card";
+    newPost.setAttribute("data-category", category);
+
+    newPost.innerHTML = `
+        <div class="post-header">
+
+            <div class="avatar">K</div>
+
+            <div>
+                <h3>
+                    Khushboo Koshta
+                    <span class="verified">✓ Verified</span>
+                </h3>
+
+                <p>Just now · Traveler Community</p>
+            </div>
+
+        </div>
+
+        <h3 style="margin-top:18px;">${title}</h3>
+
+        <p class="post-text">${content}</p>
+
+        <div class="post-actions">
+
+            <button class="like-btn">
+                ♡ <span>0</span>
+            </button>
+
+            <button onclick="addComment(this)">
+                💬 Comment
+            </button>
+
+            <button onclick="sharePost()">
+                ↗ Share
+            </button>
+
+            <button onclick="reportPost(this)">
+                ⚑ Report
+            </button>
+
+        </div>
+
+        <div class="comments"></div>
+    `;
+
+    postContainer.prepend(newPost);
+
+    attachLikeButton(newPost.querySelector(".like-btn"));
+
+    document.getElementById("postTitle").value = "";
+    document.getElementById("postContent").value = "";
+
+    postModal.classList.remove("show");
+
+    updatePostCount();
+
+    showToast("Your verified post has been published.");
 }
 
 
-// ================= CONVERT IMAGE TO BASE64 =================
+function updatePostCount() {
 
-function convertImageToBase64(file) {
+    const count = document.querySelectorAll(".post-card").length;
 
-    return new Promise(function(resolve, reject) {
+    document.getElementById("postCount").textContent = count;
+}
 
-        const reader =
-            new FileReader();
 
-        reader.onload = function() {
+/* ---------------- LIKE ---------------- */
 
-            resolve(reader.result);
+function attachLikeButton(button) {
 
-        };
+    button.addEventListener("click", function () {
 
-        reader.onerror = function() {
+        let count = Number(button.querySelector("span").textContent);
 
-            reject(reader.error);
+        if (button.classList.contains("liked")) {
 
-        };
+            count--;
+            button.classList.remove("liked");
+            button.innerHTML = "♡ <span>" + count + "</span>";
 
-        reader.readAsDataURL(file);
+        } else {
 
+            count++;
+            button.classList.add("liked");
+            button.innerHTML = "♥ <span>" + count + "</span>";
+        }
     });
-
 }
 
 
-// ================= PUBLISH POST =================
+document.querySelectorAll(".like-btn").forEach(function (button) {
+    attachLikeButton(button);
+});
 
-async function publishPost() {
 
-    const route =
-        document.getElementById("postRoute").value.trim();
-
-    const caption =
-        document.getElementById("postCaption").value.trim();
-
-    const photoInput =
-        document.getElementById("postPhoto");
-
-
-    if (route === "" || caption === "") {
-
-        alert(
-            "Please enter route and travel experience."
-        );
-
-        return;
-
-    }
-
-
-    let photoData = "";
-
-
-    if (photoInput.files.length > 0) {
-
-        const file =
-            photoInput.files[0];
-
-
-        if (file.size > 2 * 1024 * 1024) {
-
-            alert(
-                "Please choose an image smaller than 2 MB."
-            );
-
-            return;
-
-        }
-
-
-        try {
-
-            photoData =
-                await convertImageToBase64(file);
-
-        } catch (error) {
-
-            alert(
-                "Unable to save the image."
-            );
-
-            return;
-
-        }
-
-    }
-
-
-    const post = {
-
-        id:
-            Date.now().toString(),
-
-        user:
-            currentUser,
-
-        route:
-            route,
-
-        caption:
-            caption,
-
-        photo:
-            photoData,
-
-        likes:
-            0,
-
-        category:
-            "route destination",
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    savedPosts.unshift(post);
-
-    savePosts();
-
-
-    renderAllPosts();
-
-
-    closeCreatePost();
-
-
-    alert(
-        "Post published and saved successfully!"
-    );
-
-
-}
-
-
-// ================= CREATE POST HTML =================
-
-function createPostElement(post) {
-
-    const newPost =
-        document.createElement("div");
-
-    newPost.className = "post";
-
-    newPost.setAttribute(
-        "data-category",
-        post.category
-    );
-
-    newPost.setAttribute(
-        "data-post-id",
-        post.id
-    );
-
-
-    // POST HEADER
-
-    const postHeader =
-        document.createElement("div");
-
-    postHeader.className =
-        "post-header";
-
-
-    const avatar =
-        document.createElement("div");
-
-    avatar.className =
-        "user-avatar";
-
-    avatar.textContent =
-        post.user.charAt(0).toUpperCase();
-
-
-    const userInfo =
-        document.createElement("div");
-
-
-    const userName =
-        document.createElement("h3");
-
-    userName.innerHTML =
-        post.user +
-        " <span class='verified'>✓ Verified</span>";
-
-
-    const userRoute =
-        document.createElement("p");
-
-    userRoute.textContent =
-        post.route;
-
-
-    userInfo.appendChild(userName);
-
-    userInfo.appendChild(userRoute);
-
-
-    postHeader.appendChild(avatar);
-
-    postHeader.appendChild(userInfo);
-
-
-    // POST IMAGE
-
-    const postImage =
-        document.createElement("div");
-
-    postImage.className =
-        "post-image";
-
-
-    if (post.photo !== "") {
-
-        const image =
-            document.createElement("img");
-
-        image.src =
-            post.photo;
-
-        postImage.appendChild(image);
-
-    } else {
-
-        postImage.textContent =
-            "🚌";
-
-
-        const imageText =
-            document.createElement("span");
-
-        imageText.textContent =
-            "My Travel Post";
-
-        postImage.appendChild(imageText);
-
-    }
-
-
-    // ACTIONS
-
-    const actions =
-        document.createElement("div");
-
-    actions.className =
-        "post-actions";
-
-
-    const likeButton =
-        document.createElement("button");
-
-    likeButton.textContent =
-        "❤️ Like";
-
-
-    if (savedLikes[post.id]) {
-
-        likeButton.classList.add("liked");
-
-        likeButton.textContent =
-            "❤️ Liked";
-
-    }
-
-
-    likeButton.onclick =
-        function() {
-
-            likePost(this);
-
-        };
-
-
-    const commentButton =
-        document.createElement("button");
-
-    commentButton.textContent =
-        "💬 Comment";
-
-
-    commentButton.onclick =
-        function() {
-
-            toggleComments(this);
-
-        };
-
-
-    const shareButton =
-        document.createElement("button");
-
-    shareButton.textContent =
-        "📤 Share";
-
-
-    shareButton.onclick =
-        function() {
-
-            sharePost(this);
-
-        };
-
-
-    const reportButton =
-        document.createElement("button");
-
-    reportButton.textContent =
-        "🚨 Report";
-
-
-    reportButton.onclick =
-        function() {
-
-            reportPost(this);
-
-        };
-
-
-    actions.appendChild(likeButton);
-
-    actions.appendChild(commentButton);
-
-    actions.appendChild(shareButton);
-
-    actions.appendChild(reportButton);
-
-
-    // LIKES
-
-    const likes =
-        document.createElement("p");
-
-    likes.className =
-        "likes";
-
-    likes.textContent =
-        post.likes + " likes";
-
-
-    // CAPTION
-
-    const captionText =
-        document.createElement("p");
-
-    captionText.className =
-        "caption";
-
-    captionText.textContent =
-        post.caption;
-
-
-    // COMMENTS SECTION
-
-    const commentsSection =
-        document.createElement("div");
-
-    commentsSection.className =
-        "comments-section";
-
-
-    const commentInput =
-        document.createElement("input");
-
-    commentInput.type =
-        "text";
-
-    commentInput.className =
-        "comment-input";
-
-    commentInput.placeholder =
-        "Write a comment...";
-
-
-    const commentButtonPost =
-        document.createElement("button");
-
-    commentButtonPost.textContent =
-        "Post";
-
-
-    commentButtonPost.onclick =
-        function() {
-
-            addComment(this);
-
-        };
-
-
-    const commentsList =
-        document.createElement("div");
-
-    commentsList.className =
-        "comments-list";
-
-
-    commentsSection.appendChild(
-        commentInput
-    );
-
-    commentsSection.appendChild(
-        commentButtonPost
-    );
-
-    commentsSection.appendChild(
-        commentsList
-    );
-
-
-    // ADD EVERYTHING
-
-    newPost.appendChild(
-        postHeader
-    );
-
-    newPost.appendChild(
-        postImage
-    );
-
-    newPost.appendChild(
-        actions
-    );
-
-    newPost.appendChild(
-        likes
-    );
-
-    newPost.appendChild(
-        captionText
-    );
-
-    newPost.appendChild(
-        commentsSection
-    );
-
-
-    // LOAD SAVED COMMENTS
-
-    loadComments(
-        post.id,
-        commentsList
-    );
-
-
-    return newPost;
-
-}
-
-
-// ================= RENDER POSTS =================
-
-function renderAllPosts() {
-
-    const postsContainer =
-        document.getElementById(
-            "postsContainer"
-        );
-
-
-    postsContainer.innerHTML = "";
-
-
-    // ADD SAVED POSTS FIRST
-
-    savedPosts.forEach(
-        function(post) {
-
-            postsContainer.appendChild(
-                createPostElement(post)
-            );
-
-        }
-    );
-
-
-    // STATIC POSTS
-
-    const staticPosts = [
-
-        {
-            user: "Khushboo",
-            route: "Jabalpur → Bhopal",
-            caption:
-                "The bus journey was very nice. The route was beautiful and the journey was very comfortable.",
-            likes: 500,
-            category: "route destination"
-        },
-
-        {
-            user: "Amrita",
-            route: "Delhi → Jabalpur",
-            caption:
-                "Delhi trip was very nice. Sharing my journey and travel tips with everyone.",
-            likes: 90,
-            category: "destination"
-        },
-
-        {
-            user: "Anaya",
-            route: "Amritsar → Punjab",
-            caption:
-                "My Amritsar journey was very adventurous. I really enjoyed the journey.",
-            likes: 1000,
-            category: "destination"
-        },
-
-        {
-            user: "Miska",
-            route: "Goa → Sri Lanka",
-            caption:
-                "My Goa to Sri Lanka journey was too good.",
-            likes: 143,
-            category: "route destination"
-        }
-
-    ];
-
-
-    staticPosts.forEach(
-        function(post, index) {
-
-            const postObject = {
-
-                id:
-                    "static-" + index,
-
-                user:
-                    post.user,
-
-                route:
-                    post.route,
-
-                caption:
-                    post.caption,
-
-                photo:
-                    "",
-
-                likes:
-                    post.likes,
-
-                category:
-                    post.category
-
-            };
-
-
-            postsContainer.appendChild(
-                createPostElement(
-                    postObject
-                )
-            );
-
-        }
-    );
-
-
-    updateProfileStats();
-
-}
-
-
-// ================= LIKE POST =================
-
-function likePost(button) {
-
-    const post =
-        button.closest(".post");
-
-
-    const postId =
-        post.getAttribute(
-            "data-post-id"
-        );
-
-
-    const likesText =
-        post.querySelector(
-            ".likes"
-        );
-
-
-    let likes =
-        parseInt(
-            likesText.textContent
-        );
-
-
-    if (
-        button.classList.contains(
-            "liked"
-        )
-    ) {
-
-        likes--;
-
-        button.classList.remove(
-            "liked"
-        );
-
-        button.textContent =
-            "❤️ Like";
-
-        savedLikes[postId] =
-            false;
-
-    } else {
-
-        likes++;
-
-        button.classList.add(
-            "liked"
-        );
-
-        button.textContent =
-            "❤️ Liked";
-
-        savedLikes[postId] =
-            true;
-
-    }
-
-
-    likesText.textContent =
-        likes + " likes";
-
-
-    // SAVE LIKE
-
-    saveLikes();
-
-
-    // UPDATE SAVED POST
-
-    const savedPost =
-        savedPosts.find(
-            function(item) {
-
-                return item.id === postId;
-
-            }
-        );
-
-
-    if (savedPost) {
-
-        savedPost.likes =
-            likes;
-
-        savePosts();
-
-    }
-
-
-    updateProfileStats();
-
-}
-
-
-// ================= COMMENTS =================
-
-function toggleComments(button) {
-
-    const post =
-        button.closest(".post");
-
-
-    const commentsSection =
-        post.querySelector(
-            ".comments-section"
-        );
-
-
-    if (
-        commentsSection.style.display ===
-        "block"
-    ) {
-
-        commentsSection.style.display =
-            "none";
-
-    } else {
-
-        commentsSection.style.display =
-            "block";
-
-    }
-
-}
-
-
-// ================= ADD COMMENT =================
+/* ---------------- COMMENTS ---------------- */
 
 function addComment(button) {
 
-    const post =
-        button.closest(".post");
+    const post = button.closest(".post-card");
+    const comments = post.querySelector(".comments");
 
-
-    const postId =
-        post.getAttribute(
-            "data-post-id"
-        );
-
-
-    const commentsSection =
-        button.closest(
-            ".comments-section"
-        );
-
-
-    const input =
-        commentsSection.querySelector(
-            ".comment-input"
-        );
-
-
-    const commentsList =
-        commentsSection.querySelector(
-            ".comments-list"
-        );
-
-
-    const commentText =
-        input.value.trim();
-
-
-    if (commentText === "") {
-
-        alert(
-            "Please write a comment."
-        );
-
+    if (comments.querySelector(".comment-box")) {
         return;
-
     }
 
+    const box = document.createElement("div");
 
-    if (!savedComments[postId]) {
+    box.className = "comment-box";
 
-        savedComments[postId] = [];
+    box.innerHTML = `
+        <input type="text" placeholder="Write a comment...">
+        <button class="primary-btn">Post</button>
+    `;
 
-    }
+    comments.appendChild(box);
 
+    box.querySelector("button").addEventListener("click", function () {
 
-    savedComments[postId].push({
+        const input = box.querySelector("input");
+        const text = input.value.trim();
 
-        user:
-            currentUser,
-
-        text:
-            commentText
-
-    });
-
-
-    saveComments();
-
-
-    const comment =
-        document.createElement("p");
-
-
-    comment.textContent =
-        "👤 " +
-        currentUser +
-        ": " +
-        commentText;
-
-
-    commentsList.appendChild(
-        comment
-    );
-
-
-    input.value = "";
-
-
-    totalComments++;
-
-
-    updateProfileStats();
-
-}
-
-
-// ================= LOAD COMMENTS =================
-
-function loadComments(
-    postId,
-    commentsList
-) {
-
-    const comments =
-        savedComments[postId] || [];
-
-
-    comments.forEach(
-        function(item) {
-
-            const comment =
-                document.createElement("p");
-
-
-            comment.textContent =
-                "👤 " +
-                item.user +
-                ": " +
-                item.text;
-
-
-            commentsList.appendChild(
-                comment
-            );
-
+        if (text === "") {
+            showToast("Write a comment first.");
+            return;
         }
-    );
 
+        const comment = document.createElement("p");
+
+        comment.style.marginTop = "10px";
+        comment.innerHTML =
+            "<strong>Khushboo:</strong> " + text;
+
+        comments.insertBefore(comment, box);
+
+        input.value = "";
+    });
 }
 
 
-// ================= SHARE =================
+/* ---------------- REPORT ---------------- */
 
-function sharePost(button) {
+function reportPost(button) {
 
-    const post =
-        button.closest(".post");
+    const post = button.closest(".post-card");
+
+    const confirmed = confirm(
+        "Report this post for moderation?"
+    );
+
+    if (confirmed) {
+
+        post.style.opacity = "0.6";
+
+        showToast(
+            "Post reported. It has been sent for moderation review."
+        );
+    }
+}
 
 
-    const caption =
-        post.querySelector(
-            ".caption"
-        ).textContent;
+/* ---------------- SOCIAL SHARE ---------------- */
 
+function sharePost() {
 
-    if (
-        navigator.share
-    ) {
+    if (navigator.share) {
 
         navigator.share({
-
-            title:
-                "TravelBus",
-
-            text:
-                caption,
-
-            url:
-                window.location.href
-
+            title: "TravelBus Community",
+            text: "Check out this travel post on TravelBus."
         });
 
     } else {
 
         navigator.clipboard.writeText(
-            caption +
-            " - TravelBus"
+            window.location.href
         );
 
-
-        alert(
-            "Post copied! You can share it now."
-        );
-
+        showToast("Platform link copied for sharing.");
     }
-
 }
 
 
-// ================= REPORT =================
-
-function reportPost(button) {
-
-    const post =
-        button.closest(".post");
-
-
-    const userName =
-        post.querySelector(
-            "h3"
-        ).textContent;
-
-
-    const caption =
-        post.querySelector(
-            ".caption"
-        ).textContent;
-
-
-    const reportContainer =
-        document.getElementById(
-            "reportedPosts"
-        );
-
-
-    const noReports =
-        reportContainer.querySelector(
-            ".no-reports"
-        );
-
-
-    if (noReports) {
-
-        noReports.remove();
-
-    }
-
-
-    const reportItem =
-        document.createElement("div");
-
-
-    reportItem.className =
-        "report-item";
-
-
-    const text =
-        document.createElement("p");
-
-
-    text.textContent =
-        "Reported post by " +
-        userName +
-        ": " +
-        caption;
-
-
-    const removeButton =
-        document.createElement("button");
-
-
-    removeButton.className =
-        "remove-btn";
-
-
-    removeButton.textContent =
-        "Remove Post";
-
-
-    removeButton.onclick =
-        function() {
-
-            const postId =
-                post.getAttribute(
-                    "data-post-id"
-                );
-
-
-            savedPosts =
-                savedPosts.filter(
-                    function(item) {
-
-                        return item.id !== postId;
-
-                    }
-                );
-
-
-            savePosts();
-
-
-            post.remove();
-
-            reportItem.remove();
-
-            checkReports();
-
-            updateProfileStats();
-
-        };
-
-
-    const dismissButton =
-        document.createElement("button");
-
-
-    dismissButton.className =
-        "dismiss-btn";
-
-
-    dismissButton.textContent =
-        "Dismiss";
-
-
-    dismissButton.onclick =
-        function() {
-
-            reportItem.remove();
-
-            checkReports();
-
-        };
-
-
-    reportItem.appendChild(
-        text
-    );
-
-
-    reportItem.appendChild(
-        removeButton
-    );
-
-
-    reportItem.appendChild(
-        dismissButton
-    );
-
-
-    reportContainer.appendChild(
-        reportItem
-    );
-
-
-    alert(
-        "Post reported. Admin can review it from Moderation."
-    );
-
-
-    showAdmin();
-
-}
-
-
-// ================= CHECK REPORTS =================
-
-function checkReports() {
-
-    const reportContainer =
-        document.getElementById(
-            "reportedPosts"
-        );
-
-
-    if (
-        reportContainer.children.length ===
-        0
-    ) {
-
-        const message =
-            document.createElement("p");
-
-
-        message.className =
-            "no-reports";
-
-
-        message.textContent =
-            "No reported posts.";
-
-
-        reportContainer.appendChild(
-            message
-        );
-
-    }
-
-}
-
-
-// ================= ADMIN =================
-
-function showAdmin() {
-
-    hideAllPages();
-
-
-    const adminSection =
-        document.getElementById(
-            "adminSection"
-        );
-
-
-    adminSection.style.display =
-        "block";
-
-}
-
-
-// ================= PROFILE STATS =================
-
-function updateProfileStats() {
-
-    const posts =
-        document.querySelectorAll(
-            "#postsContainer .post"
-        ).length;
-
-
-    document.getElementById(
-        "profilePosts"
-    ).textContent =
-        posts;
-
-
-    document.getElementById(
-        "profileLikes"
-    ).textContent =
-        totalLikes;
-
-
-    document.getElementById(
-        "profileComments"
-    ).textContent =
-        totalComments;
-
-
-    document.getElementById(
-        "activityPosts"
-    ).textContent =
-        posts;
-
-
-    document.getElementById(
-        "activityLikes"
-    ).textContent =
-        totalLikes;
-
-
-    document.getElementById(
-        "activityComments"
-    ).textContent =
-        totalComments;
-
-}
-
-
-// ================= EDIT PROFILE =================
-
-function editProfile() {
-
-    const newName =
-        prompt(
-            "Enter your profile name:",
-            currentUser
-        );
-
-
-    if (
-        newName !== null &&
-        newName.trim() !== ""
-    ) {
-
-        currentUser =
-            newName.trim();
-
-
-        alert(
-            "Profile name updated successfully!"
-        );
-
-    }
-
-}
-
-
-// ================= FILTER POSTS =================
+/* ---------------- FILTER POSTS ---------------- */
 
 function filterPosts(category) {
 
-    hideAllPages();
+    const posts = document.querySelectorAll(".post-card");
 
+    posts.forEach(function (post) {
 
-    mainContainer.style.display =
-        "grid";
+        const postCategory = post.getAttribute("data-category");
 
+        if (category === "all" || category === "popular") {
 
-    const posts =
-        document.querySelectorAll(
-            "#postsContainer .post"
-        );
+            post.style.display = "block";
 
+        } else if (postCategory === category) {
 
-    posts.forEach(
-        function(post) {
+            post.style.display = "block";
 
-            const postCategory =
-                post.getAttribute(
-                    "data-category"
-                );
+        } else {
 
-
-            if (
-                postCategory.includes(
-                    category
-                )
-            ) {
-
-                post.style.display =
-                    "block";
-
-            } else {
-
-                post.style.display =
-                    "none";
-
-            }
-
+            post.style.display = "none";
         }
-    );
-
-
-    document.getElementById(
-        "pageTitle"
-    ).textContent =
-        "Explore Results";
-
+    });
 }
 
 
-// ================= SHOW ALL POSTS =================
+/* ---------------- ROUTE PLANNER ---------------- */
 
-function showAllPosts() {
+function planRoute() {
 
-    hideAllPages();
+    const start =
+        document.getElementById("startLocation").value.trim();
 
+    const destination =
+        document.getElementById("destination").value.trim();
 
-    mainContainer.style.display =
-        "grid";
+    const waypoint =
+        document.getElementById("waypoint").value.trim();
 
+    if (start === "" || destination === "") {
 
-    const posts =
-        document.querySelectorAll(
-            "#postsContainer .post"
-        );
-
-
-    posts.forEach(
-        function(post) {
-
-            post.style.display =
-                "block";
-
-        }
-    );
-
-
-    document.getElementById(
-        "pageTitle"
-    ).textContent =
-        "Travel Community";
-
-}
-
-
-// ================= POPULAR POSTS =================
-
-function showPopularPosts() {
-
-    hideAllPages();
-
-
-    mainContainer.style.display =
-        "grid";
-
-
-    const posts =
-        document.querySelectorAll(
-            "#postsContainer .post"
-        );
-
-
-    posts.forEach(
-        function(post) {
-
-            const likesText =
-                post.querySelector(
-                    ".likes"
-                ).textContent;
-
-
-            const likes =
-                parseInt(
-                    likesText
-                );
-
-
-            if (
-                likes >= 500
-            ) {
-
-                post.style.display =
-                    "block";
-
-            } else {
-
-                post.style.display =
-                    "none";
-
-            }
-
-        }
-    );
-
-
-    document.getElementById(
-        "pageTitle"
-    ).textContent =
-        "🔥 Popular Posts";
-
-}
-
-
-// ================= FORUM =================
-
-function openForum(title) {
-
-    currentForum =
-        title;
-
-
-    document.getElementById(
-        "forumTitle"
-    ).textContent =
-        title;
-
-
-    document.getElementById(
-        "forumPopup"
-    ).style.display =
-        "flex";
-
-
-    loadForumMessages();
-
-}
-
-
-function closeForum() {
-
-    document.getElementById(
-        "forumPopup"
-    ).style.display =
-        "none";
-
-}
-
-
-// ================= POST FORUM MESSAGE =================
-
-function postForumMessage() {
-
-    const messageInput =
-        document.getElementById(
-            "forumMessage"
-        );
-
-
-    const message =
-        messageInput.value.trim();
-
-
-    if (message === "") {
-
-        alert(
-            "Please write your discussion."
+        showToast(
+            "Please enter start location and destination."
         );
 
         return;
-
     }
 
+    const routeResults =
+        document.getElementById("routeResults");
 
-    if (!savedForums[currentForum]) {
+    const waypointText =
+        waypoint === ""
+            ? "Direct route"
+            : "Via " + waypoint;
 
-        savedForums[currentForum] = [];
+    routeResults.innerHTML = `
 
-    }
+        <div class="route-card">
+
+            <h3>🚦 Recommended Route</h3>
+
+            <p>
+                ${start} → ${waypointText} → ${destination}
+            </p>
+
+            <div class="route-details">
+                <span>📏 310 km</span>
+                <span>⏱️ 7 hr 20 min</span>
+                <span>🚦 Moderate traffic</span>
+            </div>
+
+            <p>
+                Current traffic: Moderate congestion.
+                Estimated delay: 15 minutes.
+            </p>
+
+            <button
+                class="secondary-btn save-route"
+                onclick="saveRoute('${start}', '${destination}')"
+            >
+                ☆ Save Route
+            </button>
+
+        </div>
 
 
-    savedForums[currentForum].push({
+        <div class="route-card">
 
-        user:
-            currentUser,
+            <h3>🛣️ Alternative Route</h3>
 
-        message:
-            message
+            <p>
+                ${start} → Alternative Highway → ${destination}
+            </p>
 
+            <div class="route-details">
+                <span>📏 325 km</span>
+                <span>⏱️ 6 hr 55 min</span>
+                <span>🚦 Low traffic</span>
+            </div>
+
+            <p>
+                Longer distance but lower traffic impact.
+            </p>
+
+            <button
+                class="secondary-btn save-route"
+                onclick="saveRoute('${start}', '${destination}')"
+            >
+                ☆ Save Route
+            </button>
+
+        </div>
+    `;
+
+    showToast("Routes updated with current traffic information.");
+}
+
+
+function saveRoute(start, destination) {
+
+    const routes =
+        JSON.parse(
+            localStorage.getItem("savedRoutes") || "[]"
+        );
+
+    routes.push({
+        start: start,
+        destination: destination
     });
 
-
-    saveForums();
-
-
-    loadForumMessages();
-
-
-    messageInput.value = "";
-
-
-    alert(
-        "Discussion saved in " +
-        currentForum
+    localStorage.setItem(
+        "savedRoutes",
+        JSON.stringify(routes)
     );
 
+    showToast("Route saved successfully.");
 }
 
 
-// ================= LOAD FORUM MESSAGES =================
+/* ---------------- NOTIFICATION SETTINGS ---------------- */
 
-function loadForumMessages() {
+function saveNotificationSettings() {
 
-    const messageContainer =
-        document.getElementById(
-            "forumMessages"
+    const settings = {
+
+        email:
+            document.getElementById("emailNotification").checked,
+
+        push:
+            document.getElementById("pushNotification").checked,
+
+        promotional:
+            document.getElementById("promoNotification").checked,
+
+        booking:
+            document.getElementById("bookingNotification").checked
+    };
+
+    localStorage.setItem(
+        "notificationSettings",
+        JSON.stringify(settings)
+    );
+
+    showToast("Notification preferences saved.");
+}
+
+
+function loadNotificationSettings() {
+
+    const saved =
+        JSON.parse(
+            localStorage.getItem("notificationSettings")
         );
 
+    if (!saved) {
+        return;
+    }
 
-    messageContainer.innerHTML = "";
+    document.getElementById("emailNotification").checked =
+        saved.email;
 
+    document.getElementById("pushNotification").checked =
+        saved.push;
 
-    const messages =
-        savedForums[currentForum] || [];
+    document.getElementById("promoNotification").checked =
+        saved.promotional;
 
+    document.getElementById("bookingNotification").checked =
+        saved.booking;
+}
 
-    messages.forEach(
-        function(item) {
-
-            const messageBox =
-                document.createElement(
-                    "div"
-                );
-
-
-            messageBox.className =
-                "forum-message";
-
-
-            messageBox.textContent =
-                "👤 " +
-                item.user +
-                ": " +
-                item.message;
+loadNotificationSettings();
 
 
-            messageContainer.appendChild(
-                messageBox
+/* ---------------- NOTIFICATION RETRY ---------------- */
+
+function retryNotification(button) {
+
+    button.disabled = true;
+    button.textContent = "Retrying...";
+
+    setTimeout(function () {
+
+        button.parentElement.querySelector("small").textContent =
+            "Delivered just now";
+
+        button.parentElement.querySelector(".notification-content")
+            .insertAdjacentHTML(
+                "beforeend",
+                ""
             );
 
-        }
-    );
+        button.remove();
 
+        showToast("Notification delivered successfully.");
+
+    }, 1200);
 }
 
 
-// ================= LOGIN =================
+/* ---------------- INTERNATIONALIZATION ---------------- */
 
-function openLogin() {
+const translations = {
 
-    const loginButton =
-        document.querySelector(
-            ".login-btn"
-        );
+    en: {
+
+        heroTitle:
+            "Your Journey, Our Community",
+
+        heroText:
+            "Share your bus journey, discover routes and connect with travelers."
+    },
+
+    hi: {
+
+        heroTitle:
+            "आपकी यात्रा, हमारा समुदाय",
+
+        heroText:
+            "अपनी बस यात्रा साझा करें, रूट खोजें और यात्रियों से जुड़ें।"
+    }
+};
 
 
-    if (
-        loginButton.textContent ===
-        "Logout"
-    ) {
-
-        loginButton.textContent =
-            "Login";
+const languageSelect =
+    document.getElementById("languageSelect");
 
 
-        currentUser =
-            "Khushboo";
+function changeLanguage(language) {
+
+    const translation =
+        translations[language] || translations.en;
+
+    document.getElementById("heroTitle").textContent =
+        translation.heroTitle;
+
+    document.getElementById("heroText").textContent =
+        translation.heroText;
+
+    localStorage.setItem(
+        "travelbus-language",
+        language
+    );
+
+    showToast(
+        language === "hi"
+            ? "भाषा बदल दी गई है।"
+            : "Language changed successfully."
+    );
+}
 
 
-        alert(
-            "You have been logged out."
-        );
+languageSelect.addEventListener("change", function () {
 
+    changeLanguage(this.value);
+
+});
+
+
+function loadLanguage() {
+
+    const savedLanguage =
+        localStorage.getItem("travelbus-language") || "en";
+
+    languageSelect.value = savedLanguage;
+
+    changeLanguage(savedLanguage);
+}
+
+loadLanguage();
+
+
+/* ---------------- REVIEWS ---------------- */
+
+let selectedRating = 0;
+
+const starButtons =
+    document.querySelectorAll("#starInput button");
+
+
+starButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+        selectedRating =
+            Number(this.getAttribute("data-rating"));
+
+        starButtons.forEach(function (star) {
+
+            const rating =
+                Number(star.getAttribute("data-rating"));
+
+            if (rating <= selectedRating) {
+                star.classList.add("active");
+            } else {
+                star.classList.remove("active");
+            }
+        });
+    });
+});
+
+
+function submitReview() {
+
+    const text =
+        document.getElementById("reviewText")
+            .value.trim();
+
+    const message =
+        document.getElementById("reviewMessage");
+
+
+    if (selectedRating === 0) {
+
+        message.textContent =
+            "Please select a rating.";
 
         return;
-
     }
 
 
-    loginPopup.style.display =
-        "flex";
+    if (text.length < 20) {
 
-}
-
-
-// ================= CLOSE LOGIN =================
-
-function closeLogin() {
-
-    loginPopup.style.display =
-        "none";
-
-}
-
-
-// ================= LOGIN USER =================
-
-function loginUser() {
-
-    const name =
-        document.getElementById(
-            "loginName"
-        ).value.trim();
-
-
-    const email =
-        document.getElementById(
-            "loginEmail"
-        ).value.trim();
-
-
-    const password =
-        document.getElementById(
-            "loginPassword"
-        ).value.trim();
-
-
-    if (
-        name === "" ||
-        email === "" ||
-        password === ""
-    ) {
-
-        alert(
-            "Please fill all fields."
-        );
+        message.textContent =
+            "Review must contain at least 20 characters.";
 
         return;
-
     }
 
 
-    currentUser =
-        name;
+    const review =
+        document.createElement("div");
+
+    review.className = "review-card";
+
+    review.innerHTML = `
+
+        <div class="review-user">
+
+            <div class="avatar">K</div>
+
+            <div>
+
+                <h4>
+                    Khushboo Koshta
+                    <span class="verified">✓ Verified</span>
+                </h4>
+
+                <div class="review-stars">
+                    ${"★".repeat(selectedRating)}
+                    ${"☆".repeat(5 - selectedRating)}
+                </div>
+
+            </div>
+
+        </div>
+
+        <p>${text}</p>
+
+        <button
+            class="helpful-btn"
+            onclick="markHelpful(this)"
+        >
+            👍 Helpful <span>0</span>
+        </button>
+    `;
+
+    document.getElementById("reviewsList")
+        .prepend(review);
 
 
-    alert(
-        "Login successful! Welcome " +
-        name
-    );
+    updateAverageRating(selectedRating);
 
 
-    loginPopup.style.display =
-        "none";
+    document.getElementById("reviewText")
+        .value = "";
 
+    selectedRating = 0;
 
-    document.querySelector(
-        ".login-btn"
-    ).textContent =
-        "Logout";
+    starButtons.forEach(function (star) {
+        star.classList.remove("active");
+    });
 
+    message.textContent =
+        "Review submitted successfully.";
 
-    document.getElementById(
-        "loginName"
-    ).value = "";
-
-
-    document.getElementById(
-        "loginEmail"
-    ).value = "";
-
-
-    document.getElementById(
-        "loginPassword"
-    ).value = "";
-
+    showToast("Your verified review has been added.");
 }
 
 
-// ================= PAGE LOADED =================
+/* ---------------- AVERAGE RATING ---------------- */
 
-renderAllPosts();
+let totalRating = 9;
+let totalReviews = 2;
 
 
-console.log(
-    "TravelBus JavaScript loaded successfully!"
-);
+function updateAverageRating(newRating) {
 
+    totalRating += newRating;
+    totalReviews++;
+
+    const average =
+        (totalRating / totalReviews).toFixed(1);
+
+    document.getElementById("averageRating")
+        .textContent = average;
+
+    document.getElementById("reviewCount")
+        .textContent = totalReviews;
+}
+
+
+/* ---------------- HELPFUL REVIEWS ---------------- */
+
+function markHelpful(button) {
+
+    const span =
+        button.querySelector("span");
+
+    let count =
+        Number(span.textContent);
+
+    count++;
+
+    span.textContent = count;
+
+    button.disabled = true;
+
+    showToast("Thanks for your feedback.");
+}
+
+
+/* ---------------- UTILITY ---------------- */
+
+function scrollToSection(id) {
+
+    document.getElementById(id)
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+}
+
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(function () {
+
+        toast.classList.remove("show");
+
+    }, 2500);
+}
 
 
 
